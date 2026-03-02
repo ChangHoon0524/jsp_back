@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	id="WebApp_ID" version="4.0">
+	<display-name>day02</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.xhtml</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.xhtml</welcome-file>
+	</welcome-file-list>
+	<!-- servlet 태그는 서블릿 클래스를 등록 servlet-name : 내부 식별용 이름 servlet-class : 실제 
+		자바 클래스 경로 -->
+	<servlet>
+		<servlet-name>MyServlet</servlet-name>
+		<servlet-class>com.servlet.app.MyServlet</servlet-class>
+	</servlet>
+	<!-- servlet-mapping 태그는 URL과 연결 servlet-name : 내부 식별용 이름 url-pattern : 
+		실제 서블릿 경로(ex : /output) -->
+	<servlet-mapping>
+		<servlet-name>MyServlet</servlet-name>
+		<url-pattern>/MyServlet</url-pattern>
+	</servlet-mapping>
+
+	<!-- InputServlet 등록 /input -->
+	<servlet>
+		<servlet-name>inputServlet</servlet-name>
+		<servlet-class>com.servlet.input.InputServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>inputServlet</servlet-name>
+		<url-pattern>/input</url-pattern>
+	</servlet-mapping>
+	
+	<!-- OutputServlet 등록 => /output -->
+	<servlet>
+		<servlet-name>outputServlet</servlet-name>
+		<servlet-class>com.servlet.output.OutputServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>outputServlet</servlet-name>
+		<url-pattern>/output</url-pattern>
+	</servlet-mapping>
+</web-app>
