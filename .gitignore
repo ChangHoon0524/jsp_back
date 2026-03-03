@@ -3,12 +3,9 @@
 
 ### Eclipse ###
 **/.metadata/
-**/.settings/
 **/bin/
 **/*.class
 **/*.log
-**/.classpath
-**/.project
 **/target/
 **/eclipse/
 
