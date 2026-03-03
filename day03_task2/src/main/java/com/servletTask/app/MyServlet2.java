@@ -2,6 +2,7 @@ package com.servletTask.app;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +20,15 @@ enum Gender{
 		case 2 -> {return Gender.FEMALE.korean;}
 		default -> {return Gender.NONE.korean;}
 		}		
+	}
+	
+	public String getGenderKorean(String value) {
+		try {
+				return Gender.valueOf(value.trim().toUpperCase()).korean;
+			}
+		catch(Exception e) {
+			return Gender.NONE.korean;
+		}
 	}
 }
 /**
@@ -44,14 +54,20 @@ public class MyServlet2 extends HttpServlet {
 		String name = request.getParameter("forwardUserName");
 		String strAge = request.getParameter("forwardUserAge");
 		int age = Integer.parseInt(strAge);
-		int radioValue = Integer.parseInt(request.getParameter("forwardGender"));
+//		int radioValue = Integer.parseInt(request.getParameter("forwardGender"));
+		String radioValue = request.getParameter("forwardGender");
 		Gender gender = Gender.NONE; 
 		String koreanGender = gender.getGenderKorean(radioValue);
-		
+		String[] colors = request.getParameterValues("color");
+	      if(colors == null) {
+	          colors = new String[0];
+	       }
 		request.setAttribute("name", name);
 		request.setAttribute("age", age);
 		request.setAttribute("koreanGender", koreanGender);
 		request.setAttribute("korAge", age - 1);
+		request.setAttribute("colors", colors);
+		
 		request.getRequestDispatcher("/result.jsp").forward(request, response);
 	}
 
@@ -65,12 +81,15 @@ public class MyServlet2 extends HttpServlet {
 		String name = request.getParameter("redirectUserName");
 		String strAge = request.getParameter("redirectUserAge");
 		int age = Integer.parseInt(strAge);
-		int radioValue = Integer.parseInt(request.getParameter("redirectGender"));
+//		int radioValue = Integer.parseInt(request.getParameter("redirectGender"));
+		String strRadioValue = request.getParameter("redirectGender");
+		System.out.println("["+ strRadioValue +"]");
 		Gender gender = Gender.NONE; 
-		String koreanGender = gender.getGenderKorean(radioValue);
-		
+		String koreanGender = gender.getGenderKorean(strRadioValue);
 		response.sendRedirect(request.getContextPath() + "/result.jsp?redirectName=" 
-				+ URLEncoder.encode(name, "UTF-8") + "&redirectAge=" + age + "&redirectGender="+URLEncoder.encode(koreanGender, "UTF-8"));
+				+ URLEncoder.encode(name, StandardCharsets.UTF_8.toString()) 
+				+ "&redirectAge=" + age 
+				+ "&redirectGender="+URLEncoder.encode(koreanGender, StandardCharsets.UTF_8.toString()));
 	}
 
 }
