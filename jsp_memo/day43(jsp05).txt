@@ -1,0 +1,58 @@
+day43(jsp 5일차)
+웹/DB 구조 -> JDBC 개념 -> JDBC 회원가입/로그인 구현 -> MyBatis 등장 이유 -> MyBatis 구조
+
+1. 웹 -> DB구조
+	웹 서비스 기능 : 회원가입, 로그인, 게시판, 댓글기능, ...
+* JSP -> WEB.XML -> Servlet -> JDBC 구조 이해
+
+1) 웹에서 데이터가 저장되는 구조
+	사용자 -> JSP -> Servlet -> JDBC -> Database
+		화면	요청처리	  DB연결	  데이터 저장
+
+
+2) JDBC(Java Database Connectivity)
+	Java 프로그램이 데이터베이스(DB)와 통신하도록 해주는 표준 API
+	Java 코드에서 SQL을 실행하고 결과를 받아오기 위한 인터페이스의 집합
+
+- 구조
+	java -> JDBC API -> JDBC Driver -> Database
+
+- JDBC 역할
+	데이터 베이스 연결
+	SQL 실행(SELECT / INSERT / UPDATE / DELETE)
+	결과데이터 읽기
+	트랜잭션 처리
+	연결 관리
+	=> Java에서 DB를 사용하는 표준 방법
+
+- JDBC 구성 요소
+	Java Applicataion -> JDBC API -> JDBC Driver -> Database
+	Driver			DB와 통신하는 드라이버
+	Connection		DB 연결 객체
+	PreparedStatement	SQL 실행 객체
+	ResultSet		결과 데이터
+
+3. JDBC 문제점
+	코드가 길다
+	반복 코드가 많다
+	SQL과 Java가 섞여있다.
+	 유지보수가 어렵다.
+
+4. MyBatis
+	DB를 쉽게 사용하도록 도와주는 (Framework)
+
+1) 특징
+	SQL과 Java 코드 분리
+	반복 코드 제거
+	JDBC 내부 사용
+2) 구조
+	SqlSessionFactoryBuilder
+	↓
+	SqlSessionFactory
+	↓
+	SqlSession
+	↓
+	Mapper.xml
+	↓
+	Database
+

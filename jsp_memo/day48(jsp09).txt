@@ -1,0 +1,104 @@
+day48
+복습 -> 전체 흐름 -> 프로젝트 최종 예제1
+
+0. 복습
+1) MyBatis 동작 구조
+	SqlSessionFactoryBuilder	설정 파일을 읽어 Factory 생성
+	↓
+	config.xml			DB연결, Mapper 등록, 환경설정
+	↓
+	SqlSessionFactory		SqlSession을 생성하는 공장
+	↓
+	SqlSession			Sql 실행 객체
+	↓
+	Mapper				SQL 실행 인터페이스 (DAO클래스로 생각)
+	↓
+	Mapper.xml			실제 SQL 쿼리문 작성
+	↓
+	DB				데이터 저장
+
+2) MVC 구조
+	Model		데이터 처리 영역
+		 DB 접근, SQL 실행, 데이터 처리
+	View		화면 출력(사용자 화면)
+		데이터 출력, 입력 폼 제공
+	Controller	요청 처리
+		요청 받기, 기능 판단, Model 호출, View 연결
+
+3) Model2 구조
+	JSP와 Servlet 역할을 분리한 구조
+	
+- 요청 흐름
+	사용자 -> JSP -> web.xml -> FrontController -> 각 기능 Controller -> DAO -> Mapper(SQL) -> DB -> 결과 반환 -> JSP(View)
+
+4) Execute 인터페이스
+	모든 Controller가 따라야하는 규칙
+	Controller는 반드시 execute() 메소드를 가져야한다
+	요청 처리, 결과 반환하는 역할
+
+5) Result 클래스
+	페이지 이동 정보를 저장
+	path		이동할 페이지
+	isRedirect	redirect 여부
+
+6) 세션과 쿠키
+	쿠키(Cookie) : 브라우저에 저장되는 데이터
+		Server -> Cookie 생성
+		Browser -> Cookie 저장
+		Browser -> 요청 시 자동 전송
+	세션(Session) : 서버가 사용자 정보를 저장하는 공간
+		Browser -> JSESSIONID(쿠키) -> Server Session -> 사용자 데이터
+
+1. 프로젝트 폴더 구조
+com.example.app
+
+member
+  |- controller
+	|- MemberFrontController
+	|- JoinOkController
+	|- LoginController
+	|- LoginOkController
+	|_ LogoutController
+  |- dto
+	|_ MemberDTO
+  |- dao
+	|_ MemberDAO
+mybatis
+	|- config.xml
+	|_ MyBatisConfig
+
+board
+
+reply
+
+file
+
+2. 
+	화면(html, css, js, img)을 다 넣고 .jsp파일로 변환
+				컨텍스트 패스 경로 변경
+	ERD	테이블 구성
+	테이블과 DTO로 통일해서 매핑
+	패키지	DTO로 동일하게 작성
+	config.xml	DTO => 별칭설정 및 추가 설정
+	web.xml		프론트 컨트롤러 경로 매핑
+	프론트컨트롤러	패키지와 파일까지만 생성 => 클래스파일, doProcess(req, resp){}
+			경로 확이
+			switch ~ case, if ~ else if 분기처리
+	Mapper.xml	-> config.xml	
+	화면 jsp ->	프컨 -> 경로 -> Mapper.xml -> DAO(BoardDetailMapper.xml) -> 
+			프컨에서 경로 확인 -> Controller
+	
+	
+	
+2) 테이블 설계
+- 요구사항 분석
+	회원은 1개로 통일
+	회원 아이디 중복 x
+	아이디, 비밀번호, 이름, 나이, 성별, 핸드폰번호, 주소(우편번호, 주소, 상세주소)
+	성별은 남자, 여자 선택안함 주에 하나만 선택가능
+
+- 개념적 모델링
+	엔티티 : 회원
+	속성	회원 : 아이디, 비밀번호, 이름, 나이, 성별, 핸드폰번호, 주소
+	관계 : x
+	

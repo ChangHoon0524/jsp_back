@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<!-- 회원가입 -->
+	<!-- Type Alias 설정으로 com.example.app.dto.MemberDTO -> MemberDTO로 경로 간략화 가능-->
+	<!-- mapUnderscoreToCamelCase -> DTO 내의 카멜표기법으로 표기된 필드 접근 용이성 강화 -->
+	<insert id="join" parameterType="MemberDTO">
+		insert into tbl_member(member_number,member_id, member_password, member_name, member_age, member_gender)
+		values(seq_member.nextval,#{memberId}, #{memberPassword}, #{memberName}, #{memberAge}, #{memberGender})
+	</insert>
+	<!-- 로그인 -->
+	<select id="login" parameterType="MemberDTO" resultType="MemberDTO">
+		select member_number, member_id, member_name, member_age, member_gender 
+		from tbl_member
+		where #{memberId} = member_id and member_password = #{memberPassword}
+	</select>
+</mapper>
+	

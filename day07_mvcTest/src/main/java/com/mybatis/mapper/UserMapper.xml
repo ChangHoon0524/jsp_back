@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<insert id="join" parameterType="map">
+		INSERT INTO tbl_users(user_number, user_id, user_pw, user_name, user_age, user_gender)
+		Values(seq_user.nextval, #{userId}, #{userPw}, #{userName}, #{userAge}, #{userGender})
+	</insert>
+	
+	<select id="login" parameterType="map" resultType="map">
+					<!-- parameterType과 resultType이 map일 경우 별칭을 활용한다 -->
+		SELECT user_id AS userId, user_name AS userName FROM tbl_users WHERE user_id = #{userId} AND user_pw = #{userPw}
+	</select>
+</mapper>

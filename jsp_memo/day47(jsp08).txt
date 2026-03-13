@@ -1,0 +1,365 @@
+day47(jsp 8일차)
+복습 -> MVC2 패턴 -> 세션과 쿠키
+
+0. 복습
+1) MyBatis 동작구조
+	SqlSessionFactoryBuilder
+	↓
+	config.xml
+	↓
+	SqlSessionFactory
+	↓
+	SqlSession
+	↓
+	Mapper
+	↓
+	Mapper.xml
+
+2) MyBatis 동작과정
+(1) 준비과정
+- SqlsessionFactoryBuilder
+	설정 파일을 읽어 Factory 생성(config.xml)
+
+- config.xml
+	전역 설정파일
+	DB연결, Mapper 등록, typeAlias, 환경설정
+
+- SqlSessionFactory
+	SqlSession을 생성하는 공장
+
+(2) 요청 처리 과정
+	사용자 요청
+	SqlSessionFactory -> SqlSession 생성
+	SqlSession -> Mapper 구현객체 생성
+	Mapper 인터페이스 호출
+	Mapper.xml SQL 실행
+	결과반환	
+	SqlSession 종료
+
+3) 로그인 구조
+	login.jsp
+	↓
+	LoginServlet
+	↓
+	MyBatis
+	↓
+	UserMapper.xml
+	↓
+	DB
+	↓
+	결과 Map
+	
+1. 전체 구조 목적
+	사용자 요청
+	↓
+	FrontController(Servlet)
+	↓
+	Controller 클래스 실행
+	↓
+	Execute 인터페이스 실행
+	↓
+	Result 반환
+	↓
+	forward / redirect
+	
+	Execute 인터페이스 : Controller 실행 규칙
+	Result 클래스 : 이동할 페이지 정보
+
+1) Execute 인터페이스
+public interface Execute {
+	public Result Excute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+}
+	모든 Controller가 반드시 구현해야하는 규칙을 정의
+	execute 메소드 : 요청을 처리하고 결과(Result)를 반환한다
+	HttpServletRequest request : 사용자 요청 정보
+	HttpServletResponse response : 응답 객체
+	Result 반환값 : Result 객체
+		Controller가 어떤 페이지로 이동할 지 결정해서 반환
+
+2) Result 클래스
+public class Result {
+	// 필드
+	private String path;
+	private boolean isRedirect;
+	// 게터, 세터
+}
+	페이지 이동정보를 저장하는 객체
+	path : 이동 경로
+	isRedirect : 		true -> sendRedirect
+				false -> forward
++) redirect와 forward
+	redirect	새로운 요청
+			url 변경
+			request 데이터 사라짐
+			response.sendRedirect("jsp 페이지 새로운경로")
+						"index.jsp"
+
+	foward		서버 내부 이동
+			url 변경 없음
+			request 유지
+			request.getRequestDispatcher("jsp페이지").forward()
+							"index.jsp"
+
+	
+2. 쿠키(Cookie)와 세션(Session)
+	사용자 상태를 유지하기 위한 기술
+	HTTP는 기본적으로 상태없음(stateless)이기 때문에 로그인 상태 같은 정보를 계속 기억하려면 별도의 저장방식이 필요하다
+1) 쿠키(Cookie)
+	클라이언트(브라우저)에 저장되는 데이터
+	서버가 생성해서 브라우저에 전달
+	이후 요청마다 자동으로 서버 전송
+
+- 흐름
+	Server -> Cookie 생성 -> 브라우저에 저장
+	Browser -> Request 보낼 때 Cookie 자동 포함
+
+- 코드
+	Cookie cookie = new Cookie("memberId", memberId);
+	cookie.setMaxAge(60 * 60 * 24);
+	response.addCookie(cookie);
+	
+	new Cookie("memberId", memberId): 쿠키 생성
+	setMaxAge()			: 쿠키 유효시간
+	response.addCookie(cookie)	: 브라우저에 전송
+
+
+2) 세션(Session)
+	서버 메모리에 사용자 정보를 저장
+	클라이언트는 sessionId만 쿠키로 보관
+
+- 구조
+	Browser
+	↓
+	JSESSIONID(쿠키)
+	↓
+	Server Session Storage
+	↓
+	사용자 데이터
+
+- 코드
+	HttpSession session = request.getSession();
+	session.setAttribute("memberDTO", memberDTO);
+	
+	getSession()		세션 생성, 가져오기
+	setAttribute()		세션에 데이터 저장
+
+- 특징
+	저장위치			서버
+	보안			쿠키보다 안전
+	용량			서버 메모리 사용
+	사용목적			로그인 상태 유지
+
++) 로그인 과정
+	사용자 로그인 요청
+	↓
+	db 로그인 확인
+	↓
+	로그인 성공
+	↓
+	session 생성
+	↓
+	session.setAttribute("memberDTO", memberDTO)
+	↓
+	Cookie 생성
+	↓
+	cookie("memberId")
+	↓
+	response.addCookie()
+
+- 세션 관련 메소드
+	session.invalidate();	// 로그아웃
+	session.getId()		// 세션ID
+	session.setMaxInactiveInterval(1800); // 세션 유지시간
+<%
+	MemberDTO member = (MemberDTO)session.getAttribute("memberDTO");
+	if(member != null) {
+%>
+로그인 사용자 : <%= member.getMemberId() %>
+	if(session.getAttribute("memberId") == null)
+
+1. MVC
+	MVC는 웹 어플리케이션을 역할별로 분리해서 개발하는 구조
+	기능을 하나의 파일에 넣지 않고 데이터 처리/화면출력/요청 제어를 나눠 관리
+	Model
+	View
+	Controller
+
+1) Model
+	데이터와 비즈니스 로직을 처리하는 영역
+	DB와 연결, sql 실행, 데이터 조회/저장/수정/삭제, 업무규칙 처리
+	DTO/VO : 데이터 전달 객체
+	DAO : DB 접근
+	Mapper : SQL 보관
+	DB
+
+2) View
+	사용자에게 보여지는 화면(UI)을 담당
+	데이터 출력, 입력 폼 제공, 버튼/링크 제공, 사용자 입력 수집
+
+	JSP가 View 역할
+
+3) Controller
+	사용자의 요청을 받아 처리 흐름을 제어하는 역할
+	요청받기, 어떤 기능인지 판단, 필요한 Model 호출, 결과에 따른 View 연결, forward/redirect 처리
+	
+2. 비즈니스 로직
+	어플리케이션이 실제 업무를 처리하기 위한 규칙이나 절차를 의미
+	로그인 => 아이디, 비밀번호 입력
+		DB에서 회원 조회
+		정보가 맞으면 로그인 성공 처리
+		세션에 사용자 정보 저장
+		자동 로그인 또는 아이디 저장 쿠키 생성
+		실패 시 다시 로그인 페이지 이동
+
+3. Model2 구조
+	JSP와 Servlet의 역할을 분리한 MVC 구조
+	
+1) Model2 요청 처리 흐름
+	1단계 : 사용자가 JSP에서 요청을 보낸다
+		요청 URL은 여러개일 수 있으며 한 화면에서도 여러 요청이 발생 가능
+
+	2단계 : web.xml 또는 URL패턴으로 요청을 그룹화
+		요청이 많아질수록 URL마다 서블릿 하나씩 매핑하면 관리가 너무 힘들어진다
+		요청을 그룹단위로 묶는다
+		*.me로 끝나는 요청은 모두 회원 관련 요청으로 보고 하나의 FrontController로 보낸다
+
+		/member/login.me
+		/member/join.me
+		/member/loginOk.me
+		/member/joinOk.me
+		/member/logout.me
+
+	3단계 : FrontController가 요청을 받는다
+		FrontController는 모든 요청을 직접 처리하는 곳이 아닌 요청을 분기
+		로그인 요청이면 LoginController
+		회원가입 요청이면 JoinController
+		로그아웃 요청이면 LogoutController
+
+		FrontController 하나에 모든 비즈니스 로직을 넣으면 
+			협업이 힘들고, 책임이 한 곳으로 몰리고, 코드가 너무 길어지고, 유지보수가 어려워지기 때문에
+			if, switch, URL 비교등으로 분기만 하고 실제 로직 처리는 각 Controller로 넘긴다
+	
+	4단계 : 각 Controller가 비즈니스 로직을 처리
+		각 기능별로 Controller를 따로 만든다
+		LoginOkController
+		JoinOkController
+		LogoutController
+		각 Controller는 자신에게 맡겨진 기능만 처리
+		서비스별로 Controller를 분리하는 것이 핵심
+
+	5단계 : DB 작업은 DAO가 담당
+		Controller가 직접 SQL을 실행하지 않는다.
+		DAO 역할 : DB 연결, SQL 실행, 결과 반환
+	
+	6단계 : 실제 SQL은 Mapper에 작성한다
+		MyBatis는 DAO안에 SQL을 길게 쓰지 않고 실제 쿼리는 Mapper.xml에 저장한다	
+
++) 사용자 요청 -> Web.xml -> FrontController -> 각 기능별 Controller -> DAO -> Mapper(SQL) -> DB
+	-> 결과 반환 -> Controller -> JSP(View)
+
+4. 쿠키(Cookie)
+	서버가 클라이언트 브라우저에 저장시키는 작은 데이터
+	브라우저에 저장되었다가 같은 서버로 요청을 보낼 때 자동으로 요청 헤더에 담겨서 전송
+	서버가 직접 가지고 있는 것이 아닌 브라우저가 저장하고 다시 보내는 데이터
+	
+	저장 위치 : 브라우저
+	서버 부담 적음
+	브라우저가 서버로 자동 전송
+	사용자가 쿠키 삭제 가능
+	보안에 취약할 수 있음
+	쿠키를 허용하지 않으면 동작하지 않을 수 있다.
+
+1) 쿠키의 동작 방식
+	클라이언트가 서버에 요청
+	서버가 쿠키를 만들어 응답을 담아 보냄
+	브라우저가 쿠키 저장
+	이후 같은 서버 요청 시 쿠키를 같이 보냄
+	서버는 쿠키 값을 읽어 사용
+	
+	서버가 생성 -> 브라우저가 저장 -> 다시 서버로 전송
+
+2) 쿠키 사용 코드
+(1) 쿠키 생성
+	Cookie cookie = new Cookie("userId", userId);
+	cookie.setMaxAge(60*60*24);
+	response.addCookie(cookie);
+
+(2) 쿠키 조회
+- 헤더 문자열로 가져오기
+	String cookieStr = request.getHeader("Cookie");
+	쿠키 전체를 문자열 형태로 가져온다
+
+- 배열로 가져오기
+	Cooke[] cookies = request.getCookies();
+	if(cookies != null){
+		for(Cookie cookie:cookies){
+			String name = cookie.getName();
+			String value = cookie.getValue();
+		}
+	}
+	
+(3) 쿠키 삭제
+	쿠키는 직접 삭제하는 것이 아니라 유효 시간을 0으로 설정해서 브라우저에 삭제하라고 알린다.
+	Cookie[] cookies = request.getCookies();
+ 	if(cookies != null){
+      		for(Cookie cookie:cookies){
+         		cookie.setMaxAge(0);
+		        response.addCookie(cookie);
+      		}
+	}
+
+5. 세션(Session)
+	서버가 사용자별 상태를 저장하는 공간
+	쿠미는 브라우저에 저장되나 세션은 서버에 저장
+	사용자가 요청을 보내면 서버는 사용자를 구분하기 위해 세션을 만들고 그 세션의 고유 번호인 세션 ID를 발급한다
+	브라우저는 이후 요청마다 세션ID를 보내고 서버는 이 ID를 보고 같은 사용자인지 식별
+
+	세션 특징
+	저장 위치 : 서버
+	보안상 쿠키보다 안전
+	서버 메모리 사용
+	사용자 상태 관리 가능
+	로그인 처리에 가장 많이 사용
+
+1) 세션 동작 방식
+	클라이언트가 서버에 요청
+	서버가 세션 생성
+	세션ID 발급
+	세션ID를 쿠키로 클라이언트에게 전송
+	클라이언트는 이후 요청마다 세션ID를 포함한 쿠키 전송
+	서버는 세션ID를 보고 같은 사용자인지 구분
+	세션에 저장된 데이터 사용
+	
+	★ 세션 자체는 서버 저장되나, 세션 ID는 보통 쿠키로 전달
+	실제 데이터 => 서버, 식별자(ID) = 브라우저 쿠키
+
+2) 세션 사용 코드
+(1) 세션 얻기
+	HttpSession session = request.getSession();
+	현재 요청에 대한 세션을 가져온다, 없으면 새로 만든다
+
+(2) 세션에 데이터 저장
+	session.setAttribute("name", "홍길동");
+	서버 세션 공간에 "name"이라는 이름으로 값 저장
+	
+(3) 세션 값 가져오기
+	String name = session.getAttribute("name");
+	session.getAttribute()의 반환타입은 Object타입이므로 형변환 필요(다운캐스팅)
+
+(4) 세션 데이터 삭제
+	session.removeAttribute("name");
+	특정 데이터만 삭제
+
+(5) 세션 전체 종료
+	session.invalidate();
+	세션 자체를 무효화, 로그아웃할 때 많이 사용
+
+※ 세션과 쿠키는 완전히 별개가 아니라 연결
+	세션은 서버에 저장되지만 서버가 누구의 세션인지를 알아야하므로 보통 세션ID를 쿠키로 전달
+
+※ 쿠키는 서버가 저장하는 것이 아니다
+	서버가 만들지만 저장하는 곳은 브라우저다
+	따라서 민감한 정보는 쿠키에 그대로 넣으면 위험
+
+※ 로그인 유지의 핵심은 세션
+	로그인 성공 후 사용자 정보를 세션에 넣어두면 서버는 이후 요청에서 세션을 보고 로그인 여부를 판단할 수 있다
