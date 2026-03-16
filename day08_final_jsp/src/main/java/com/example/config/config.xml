@@ -17,6 +17,8 @@
 	<typeAliases>
 		<!-- <package name="com.example.app.member.dto"/> -->
 		<typeAlias type="com.example.app.member.dto.MemberDTO" alias="MemberDTO"></typeAlias>
+		<typeAlias type="com.example.app.board.dto.BoardDTO" alias="BoardDTO"></typeAlias>
+		<typeAlias type="com.example.app.board.dto.BoardListDTO" alias="BoardListDTO"></typeAlias>
 	</typeAliases>
 
    <environments default="oracle">
@@ -34,5 +36,6 @@
    <!-- Mapper.xml 등록 추후 필요 -->
    <mappers>
    		<mapper resource="com/example/mapper/MemberMapper.xml"></mapper>
+   		<mapper resource="com/example/mapper/BoardMapper.xml"></mapper>
    </mappers>
 </configuration>

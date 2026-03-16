@@ -1,0 +1,142 @@
+day50(jsp 11일차)
+
+1. html 구조 그대로 webapp 폴더에 넣기
+	- 팀장은 파일 그대로만 넣어둔다
+	- 클론 받은 후 진행 : 팀원은 맡은 파일들만 맨 윗줄에 반드시 추가해야한다
+	
+2. app 패키지 추가 (Execute 인터페이스, Result 클래스)
+	config 패키지 추가 
+	(MyBatisConfig 클래스 파일, config.xml, PropertyConfig 클래스 파일)
+3. resources 폴더 추가
+	context.properties 파일
+
+---------------------------------------------------------------
+1. MyBatis Mapper 태그
+0) 주요 속성
+	id		DAO에서 호출할 메소드 이름
+	resultType	조회 결과를 담을 객체
+	parameterType	전달되는 파라미터 타입
+
+1) <select> 조회 SQL
+	<select id="selectList" resultType="BoardDTO">
+		SELECT * FROM TBL_BOARD
+	</select>
+
+2) <insert> 데이터 저장
+3) <update> 데이터 수정
+4) <delete> 데이터 삭제
+5) <selectKey> 시퀀스 가져오기(Oracle 필수)
+	INSERT 전에 시퀀스 값을 가져와 DTO에 저장
+
+	<selectKey keyProperty="boardNumber" resultType="int" order="BEFORE">
+		SELECT seq_board.nextval FROM daul
+	</selectKey>
+
+6) <if>	조건문(동적 SQL)
+	검색 기능에서 많이 사용된다
+
+	<select id="search>
+		SELECT * FROM tbl_board
+		WHERE 1 = 1
+		<if test="keyword != null">
+			AND board_title LIKE '%' || #{keyword} || '%'
+		</if>
+	</select>
+
+7) <set> UPDATE 동적 처리
+	UPDATE에서 조건에 따라 컬럼 변경
+	
+	<update id="update">
+		UPDATE tbl_board
+		<set>
+			<if test="boardTitle != null">
+				boardTitle=#{boardTitle},
+			</if>
+			<if test="boardContent != null">
+				board_content = #{boardContent}
+			</if>
+		</set>
+		WHERE board_number = #{boardNumber}
+	</update>
+
+8) CDATA(Character Data)
+	XML에서 특수문자를 그대로 사용하게 해주는 문법
+	XML은 <, >, & 같은 문자를 태그로 인식하기 때문에 SQL을 작성 시 문제가 발생할 수 있다
+	XML 파서에게 이 구간은 태그가 아니라 문자열임을 알려주는 역할을 하는 것이 CDATA
+	<![CDATA[
+		내용
+	]]>
+	
+2. <form> 태그 게시글 작성 데이터
+	사용자가 글 작성 (form submit)
+	↓
+	요청 발생 (/board/boardWriteOk.bo)
+	↓
+	BoardFrontController	=> 파일 처리 MultiPartRequest
+	↓
+	BoardWirteOkController 실행
+	↓
+	게시글 저장
+	(DAO -> MyBatis -> DB)
+
+
+2) 파일 업로드 시 반드시 작성해야하는 속성
+	<form enctype="multipart/form-data">
+
+	<input type="file"> 
+
+	enctype	타입				의미
+	application/x-www-form-urlencoded	기본 방식
+	multipart/form-data			파일 업로드
+	text/plain				거의 사용하지 않음
+
+3) multipart가 필요한 이유
+	기본 방식 	title=hello&content=test
+	파일 업로드는 위의 방식처럼 보낼 수 없으므로 데이터를 여러 파트로 나누어 전송한다
+
+	---------form-data
+	Content-Disposition: form-data; name="title"
+	
+	hello
+	---------form-data
+	Content-Disposition: form-data; name="file"; filename="cat.png"
+
+----------------------------------------------------------------------------------------
+0. html -> jsp파일로만 변경(태그 추가, 확장자 변경)
+1. 테이블 기준 DTO
+2. mapper.xml	=> 3/16/월 70% 진행되어야함, 필요한 쿼리문 있으면 주석으로 작성해줄것(EX : 파일 추가)
+3. DAO
+4. FrontController
+5. Controller
+6. jsp/js
+
+3/16/월
+1팀 : jsp 파일 변경 / DTO
+2팀 : DTO
+3팀 : jsp 파일 올리기 / DTO
+4팀 : jsp 파일 변경 / DTO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

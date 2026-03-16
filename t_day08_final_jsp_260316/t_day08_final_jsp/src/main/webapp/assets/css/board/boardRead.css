@@ -1,0 +1,93 @@
+@charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f8f8f8;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1024px;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* 게시글 정보 스타일 */
+.view-info {
+  margin-bottom: 20px;
+}
+
+.title-wrap > span {
+  margin-right: 20px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.info-title {
+  display: flex;
+}
+.title-wrap {
+  margin-right: 20px;
+}
+
+.view-info .writer {
+  font-weight: bold;
+}
+
+/* 게시글 내용 스타일 */
+.view-content {
+  margin-bottom: 30px;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+/* 버튼 스타일 */
+.btn-group {
+  text-align: right;
+  margin-top: 30px;
+}
+
+.list-btn,
+.modify-btn,
+.delete-btn {
+  color: #fff;
+  background-color: #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.list-btn:hover,
+.modify-btn:hover,
+.delete-btn:hover {
+  background-color: rgb(255, 87, 87);
+  color: #fff;
+}
+
+.view-attach {
+  margin-bottom: 20px;
+}
+
+.view-attach > a {
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.view-attach > a:hover {
+  text-decoration: underline;
+}
