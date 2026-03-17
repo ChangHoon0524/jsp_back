@@ -1,0 +1,77 @@
+1. cos.jar
+	정식 이름 : com.oreilly.servlet(O'Reilly multipart library)
+	multipart/form-data 요청 처리
+	파일 업로드 처리
+	파일 저장 + 파라미터 같이 처리
+
+HTML에서 <form method="post" enctype="multipart/form-data">
+	일반 request.getParameter() 사용 불가
+	cos.jar 필요
+
+	실무에서 보통 사용하는 라이브러리 : commons-fileupload, spring multipart
+
++) multipart/form-data에서는 getParameter()가 안되는가?
+	request.getParameter()는 내부적으로 x-www-form-urlencoded 방식만 파싱되도록 설계됨(title=hello&content=text)(key=value&key=value 방식)
+	
+	multipart는 
+	----------boundary
+	Content-Disposition:form-data
+	서버가 자동으로 파싱을 못하고 결과는 null
+	
+=> 일반적인 폼 요청은 key=value&key=value 형식으로 요청되므로, servlet 컨테이너가 자동으로 파싱하여 getParameter()로 값을 꺼내 사용할 수 있다.
+	multipart/form-data는 파일 데이터가 포함되기 위해 boundary 기반 복합 데이터 구조로 전송되므로 서블릿이 기본적으로 파싱할 수 없다.
+	결과적으로 request.getParameter()를 사용하면 값이 null이 되고 이 문제를 해결하기 위해 Multipart 전용 파서 라이브러리를 사용해야한다.
+	우리가 사용한 라이브러리는 MultipartRequest(cos.jar)를 사용했다
+
++) MultipartRequest를 이용한 데이터 파싱
+ MultipartRequest multipartRequest 
+= new MultipartRequest(request, UPLOAD_PATH, FILE_SIZE, "utf-8", new DefaultRenamePolicy()); 
+	MultipartRequest 생성 순간 => 업로드 + 파싱 동시 수행
+	request : HTTP 요청 객체
+	UPLOAD_PATH : 파일 저장 경로
+	FILE_SIZE : 파일 최대 크기(5MB)
+	"utf-8" : 파일명 인코딩 방식
+	new DefaultFileRenamePolicy() : 파일명 중복 시 자동으로 이를 변경해주는 정책
+	
+	요청 글쓰기 버튼 클릭 -> 글작성 페이지 응답 
+[사용자] -> [form] -> [Controller] -> [DAO(DB)] -> [파일 저장] -> [응답]
+
+1) 사용자 글쓰기
+	 JSP 페이지	multipart 요청 발생, 파일 + 텍스트 같이 전송
+
+2) FrontController 진입
+	BoardWriteOkController().execute();	=> 프론트 컨트롤러
+
+	BoardWriteOkController 컨트롤러 진입
+
+3) 로그인 체크
+	없으면 차단, 있으면 memberNumber 현재 로그인한 사용자 번호 저장
+
+4) 업로드 경로 설정
+	파일 저장 위치 결정
+
+5) 폴더 생성
+	없으면 업로드 실패 방지
+
+6) MultipartRequest 생성
+	요청 파싱, 파일 저장, 파라미터 분리
+
+7) 게시글 데이터 꺼내기
+	MultipartRequest.getParameter("boardTitle")
+	기존 request 사용 불가, multipartRequest 사용해야한다.
+
+8) 게시글 db 저장
+	boardNumber 생성 PK
+
+9) 파일 처리
+	Enumeration<String> fileNames = multipartRequest.getFileNames();
+	while(){
+		getFileSystemName() 서버 저장 파일명
+		getOriginalFileName() 원본파일명
+	}
+
+10) 파일 db 저장
+	boardNumber FK로 연결
+
+11) 결과 이동 
+	리스트 페이지 이동

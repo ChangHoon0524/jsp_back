@@ -14,10 +14,11 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/bulidpath/jstl.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/bulidpath/mybatis-3.5.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/bulidpath/ojdbc6.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/bulidpath/standard.jar"/>
-	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/bulidpath/tomcat-dbcp.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/jstl.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/mybatis-3.5.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/ojdbc6.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/standard.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/tomcat-dbcp.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/web_0900/tools/buildpath/cos.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

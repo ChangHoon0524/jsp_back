@@ -52,7 +52,7 @@ public class LoginOkController implements Execute{
 				Cookie cookie = new Cookie("memberId", "");
 				cookie.setMaxAge(0);
 				response.addCookie(cookie);
-			}
+			} 
 		}else {
 			path = "/member/login.me?login=fail";
 		}

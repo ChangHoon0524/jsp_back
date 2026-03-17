@@ -1,24 +1,21 @@
-package com.example.app.board.controller;
+package com.example.app.file.controller;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.app.Result;
-
 /**
- * Servlet implementation class BoardFrontController
+ * Servlet implementation class FileFrontController
  */
-public class BoardFrontController extends HttpServlet {
+public class FileFrontController extends HttpServlet {
    private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BoardFrontController() {
+    public FileFrontController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,30 +35,21 @@ public class BoardFrontController extends HttpServlet {
       // TODO Auto-generated method stub
       doProcess(request, response);
    }
-   
-   protected void doProcess(HttpServletRequest request, HttpServletResponse response)
-         throws ServletException, IOException {
-      String target = request.getRequestURI().substring(request.getContextPath().length());
-      System.out.println("BoardFrontController 현재 경로 : " + target);
-      Result result = new Result();
-      
-      switch(target) {
-      case  "/board/boardListOk.bo":
-         System.out.println("게시물 목록 처리 요청");
-         result = new BoardListOkController().execute(request, response);
-         System.out.println("게시물 목록 처리 완료");
-         break;
-      }
-      
-      if(result != null && result.getPath() != null) {
-         if(result.isRedirect()) {
-            response.sendRedirect(result.getPath());
-         } else {
-            request.getRequestDispatcher(result.getPath()).forward(request, response);
-         }
-      }
-      
-      
-   }
 
+   protected void doProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      request.setCharacterEncoding("UTF-8");
+      response.setCharacterEncoding("UTF-8");
+      System.out.println("FileFrontController 실행!!");
+      String target = request.getRequestURI().substring(request.getContextPath().length());
+      System.out.println("파일 프론트 컨트롤러 현재 경로 : " + target);
+   
+   }
 }
+
+
+
+
+
+
+
+
